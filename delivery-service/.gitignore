@@ -1,0 +1,7 @@
+.env
+.idea
+__pycache__
+!alembic/versions/.gitkeep
+alembic/versions/*
+.venv
+.DS_Store

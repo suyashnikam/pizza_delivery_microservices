@@ -1,0 +1,135 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    networks:
+      - pizza-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - pizza-network
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - pizza-network
+    ports:
+      - "9092:9092"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - pizza-network
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: user-service
+    restart: always
+    env_file:
+      - ./auth-service/.env
+    depends_on:
+      - postgres
+    ports:
+      - "8001:8000"
+    networks:
+      - pizza-network
+
+  pizza-service:
+    build:
+      context: ./pizza-service
+    container_name: pizza-service
+    restart: always
+    env_file:
+      - ./pizza-service/.env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8002:8000"
+    networks:
+      - pizza-network
+
+  outlet-service:
+    build:
+      context: ./outlet-service
+    container_name: outlet-service
+    restart: always
+    env_file:
+      - ./outlet-service/.env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8003:8000"
+    networks:
+      - pizza-network
+
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    restart: always
+    env_file:
+      - ./order-service/.env
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8004:8000"
+    networks:
+      - pizza-network
+
+  delivery-service:
+    build:
+      context: ./delivery-service
+    container_name: delivery-service
+    restart: always
+    env_file:
+      - ./delivery-service/.env
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8005:8000"
+    networks:
+      - pizza-network
+
+#volumes:
+#  postgres_data:
+
+networks:
+  pizza-network:
+    driver: bridge
+    external: true
