@@ -8,7 +8,6 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'suyashnikam1998'
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
-        PYTHON_VERSION = '3.9'
     }
     
     stages {
@@ -24,70 +23,6 @@ pipeline {
                         [$class: 'CleanCheckout']
                     ]
                 ])
-            }
-        }
-        
-        stage('Setup Python') {
-            steps {
-                sh '''
-                    python3 --version
-                    python3 -m pip install --upgrade pip
-                '''
-            }
-        }
-        
-        stage('Build') {
-            parallel {
-                stage('Auth Service') {
-                    steps {
-                        dir('auth-service') {
-                            sh '''
-                                pip install --upgrade pip
-                                pip install -r requirements.txt || exit 1
-                            '''
-                        }
-                    }
-                }
-                stage('Pizza Service') {
-                    steps {
-                        dir('pizza-service') {
-                            sh '''
-                                pip install --upgrade pip
-                                pip install -r requirements.txt || exit 1
-                            '''
-                        }
-                    }
-                }
-                stage('Order Service') {
-                    steps {
-                        dir('order-service') {
-                            sh '''
-                                pip install --upgrade pip
-                                pip install -r requirements.txt || exit 1
-                            '''
-                        }
-                    }
-                }
-                stage('Outlet Service') {
-                    steps {
-                        dir('outlet-service') {
-                            sh '''
-                                pip install --upgrade pip
-                                pip install -r requirements.txt || exit 1
-                            '''
-                        }
-                    }
-                }
-                stage('Delivery Service') {
-                    steps {
-                        dir('delivery-service') {
-                            sh '''
-                                pip install --upgrade pip
-                                pip install -r requirements.txt || exit 1
-                            '''
-                        }
-                    }
-                }
             }
         }
         
