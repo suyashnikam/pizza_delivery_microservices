@@ -8,6 +8,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'suyashnikam1998'
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+        PYTHON_VERSION = '3.9'
     }
     
     stages {
@@ -29,8 +30,8 @@ pipeline {
         stage('Setup Python') {
             steps {
                 sh '''
+                    python3 --version
                     python3 -m pip install --upgrade pip
-                    pip install virtualenv
                 '''
             }
         }
@@ -41,9 +42,8 @@ pipeline {
                     steps {
                         dir('auth-service') {
                             sh '''
-                                python3 -m venv venv
-                                . venv/bin/activate
-                                pip install -r requirements.txt
+                                pip install --upgrade pip
+                                pip install -r requirements.txt || exit 1
                             '''
                         }
                     }
@@ -52,9 +52,8 @@ pipeline {
                     steps {
                         dir('pizza-service') {
                             sh '''
-                                python3 -m venv venv
-                                . venv/bin/activate
-                                pip install -r requirements.txt
+                                pip install --upgrade pip
+                                pip install -r requirements.txt || exit 1
                             '''
                         }
                     }
@@ -63,9 +62,8 @@ pipeline {
                     steps {
                         dir('order-service') {
                             sh '''
-                                python3 -m venv venv
-                                . venv/bin/activate
-                                pip install -r requirements.txt
+                                pip install --upgrade pip
+                                pip install -r requirements.txt || exit 1
                             '''
                         }
                     }
@@ -74,9 +72,8 @@ pipeline {
                     steps {
                         dir('outlet-service') {
                             sh '''
-                                python3 -m venv venv
-                                . venv/bin/activate
-                                pip install -r requirements.txt
+                                pip install --upgrade pip
+                                pip install -r requirements.txt || exit 1
                             '''
                         }
                     }
@@ -85,9 +82,8 @@ pipeline {
                     steps {
                         dir('delivery-service') {
                             sh '''
-                                python3 -m venv venv
-                                . venv/bin/activate
-                                pip install -r requirements.txt
+                                pip install --upgrade pip
+                                pip install -r requirements.txt || exit 1
                             '''
                         }
                     }
