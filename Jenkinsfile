@@ -25,42 +25,70 @@ pipeline {
                 ])
             }
         }
-
         
-        stage('Build and Test') {
+        stage('Setup Python') {
+            steps {
+                sh '''
+                    python3 -m pip install --upgrade pip
+                    pip install virtualenv
+                '''
+            }
+        }
+        
+        stage('Build') {
             parallel {
                 stage('Auth Service') {
                     steps {
                         dir('auth-service') {
-                            sh './mvnw clean package -DskipTests'
+                            sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install -r requirements.txt
+                            '''
                         }
                     }
                 }
                 stage('Pizza Service') {
                     steps {
                         dir('pizza-service') {
-                            sh './mvnw clean package -DskipTests'
+                            sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install -r requirements.txt
+                            '''
                         }
                     }
                 }
                 stage('Order Service') {
                     steps {
                         dir('order-service') {
-                            sh './mvnw clean package -DskipTests'
+                            sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install -r requirements.txt
+                            '''
                         }
                     }
                 }
                 stage('Outlet Service') {
                     steps {
                         dir('outlet-service') {
-                            sh './mvnw clean package -DskipTests'
+                            sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install -r requirements.txt
+                            '''
                         }
                     }
                 }
                 stage('Delivery Service') {
                     steps {
                         dir('delivery-service') {
-                            sh './mvnw clean package -DskipTests'
+                            sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install -r requirements.txt
+                            '''
                         }
                     }
                 }
