@@ -72,6 +72,7 @@ To deploy updates:
 ### Pizza Service
 - Pizza menu management
 - Price management
+- Availability management
 
 ### Order Service
 - Order processing
