@@ -8,7 +8,7 @@ The **User Service** is a microservice in the Pizza Delivery API system. It is r
 - User Login with JWT authentication
 - Token Refresh Mechanism
 - Database Integration using PostgreSQL
-- Dockerized Deployment
+- Dockerization
 
 ## Technologies Used
 - **FastAPI** (Backend Framework)
